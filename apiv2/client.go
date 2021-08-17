@@ -70,6 +70,12 @@ func NewRESTClient(legacyClient *client.Harbor, v2Client *v2client.Harbor, authI
 // NewRESTClientForHost constructs a new REST client containing a swagger API client using the defined
 // host string and basePath, the additional Harbor v2 API suffix as well as basic auth info.
 func NewRESTClientForHost(u, username, password string) (*RESTClient, error) {
+	return NewRESTClientWithAuthInfo(u, runtimeclient.BasicAuth(username, password))
+}
+
+// NewRESTClientForHost constructs a new REST client containing a swagger API client using the defined
+// host string and basePath, the additional Harbor v2 API suffix as well as basic auth info.
+func NewRESTClientWithAuthInfo(u string, authInfo runtime.ClientAuthInfoWriter) (*RESTClient, error) {
 	if !strings.HasSuffix(u, v2URLSuffix) {
 		u += v2URLSuffix
 	}
@@ -81,7 +87,6 @@ func NewRESTClientForHost(u, username, password string) (*RESTClient, error) {
 
 	legacySwaggerClient := client.New(runtimeclient.New(harborURL.Host, harborURL.Path, []string{harborURL.Scheme}), strfmt.Default)
 	v2SwaggerClient := v2client.New(runtimeclient.New(harborURL.Host, harborURL.Path, []string{harborURL.Scheme}), strfmt.Default)
-	authInfo := runtimeclient.BasicAuth(username, password)
 
 	return NewRESTClient(legacySwaggerClient, v2SwaggerClient, authInfo), nil
 }

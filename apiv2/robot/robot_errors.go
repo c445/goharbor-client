@@ -19,6 +19,8 @@ const (
 	ErrRobotAccountUnknownResourceMsg = "resource unknown"
 	// ErrRobotAccountInternalErrorsMsg is the error message for ErrRobotAccountInternalErrors error.
 	ErrRobotAccountInternalErrorsMsg = "internal server error"
+	// ErrRobotAccountConflictMsg is the error message for ErrRobotAccountConflict error.
+	ErrRobotAccountConflictMsg = "the robot account already exists"
 )
 
 // ErrRobotAccountInvalid describes an invalid robot account error.
@@ -62,6 +64,14 @@ func (e *ErrRobotAccountInternalErrors) Error() string {
 	return ErrRobotAccountInternalErrorsMsg
 }
 
+// ErrRobotAccountConflict describes server-sided internal errors.
+type ErrRobotAccountConflict struct{}
+
+// Error returns the error message.
+func (e *ErrRobotAccountConflict) Error() string {
+	return ErrRobotAccountConflictMsg
+}
+
 // handleSwaggerRobotErrors takes a swagger generated error as input,
 // which usually does not contain any form of error message,
 // and outputs a new error with proper message.
@@ -83,6 +93,8 @@ func handleSwaggerRobotErrors(in error) error {
 			return &ErrRobotAccountUnknownResource{}
 		case http.StatusInternalServerError:
 			return &ErrRobotAccountInternalErrors{}
+		case http.StatusConflict:
+			return &ErrRobotAccountConflict{}
 		}
 	}
 

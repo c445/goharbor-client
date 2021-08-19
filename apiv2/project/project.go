@@ -149,10 +149,11 @@ func (c *RESTClient) GetProject(ctx context.Context, nameOrID string) (*modelv2.
 		Context:         ctx,
 	}, c.AuthInfo)
 	if err != nil {
-		if resp == nil {
-			return nil, &ErrProjectNotFound{}
-		}
 		return nil, handleSwaggerProjectErrors(err)
+	}
+
+	if resp == nil {
+		return nil, &ErrProjectNotFound{}
 	}
 
 	return resp.Payload, nil

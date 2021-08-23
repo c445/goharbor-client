@@ -9,7 +9,6 @@ import (
 	"github.com/mittwald/goharbor-client/v4/apiv2/internal/api/client/robotv1"
 
 	modelv2 "github.com/mittwald/goharbor-client/v4/apiv2/model"
-	uc "github.com/mittwald/goharbor-client/v4/apiv2/user"
 
 	v2client "github.com/mittwald/goharbor-client/v4/apiv2/internal/api/client"
 	"github.com/mittwald/goharbor-client/v4/apiv2/internal/legacyapi/client"
@@ -227,11 +226,19 @@ func (c *RESTClient) AddProjectMember(ctx context.Context, p *modelv2.Project, u
 		return &ErrProjectMismatch{}
 	}
 
-	userClient := uc.NewClient(c.LegacyClient, c.V2Client, c.AuthInfo)
-
-	userExists, err := userClient.UserExists(ctx, u)
+	// check that username exists
+	productClientService := c.LegacyClient.Products
+	userSearchParams := products.NewGetUsersSearchParamsWithContext(ctx)
+	userSearchParams.Username = u.Username
+	userSearch, err := productClientService.GetUsersSearch(userSearchParams, c.AuthInfo)
 	if err != nil {
 		return err
+	}
+	userExists := false
+	for _, username := range userSearch.Payload {
+		if username.Username == u.Username {
+			userExists = true
+		}
 	}
 	if !userExists {
 		return &ErrProjectMemberMismatch{}

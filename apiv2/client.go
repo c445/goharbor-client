@@ -240,6 +240,11 @@ func (c *RESTClient) DeleteProjectWebhookPolicy(ctx context.Context, p *modelv2.
 	return c.project.DeleteProjectWebhookPolicy(ctx, p, policyID)
 }
 
+// ListProjectArtifacts wraps the ListProjectArtifacts method of the project sub-package.
+func (c *RESTClient) ListProjectArtifacts(ctx context.Context, p *modelv2.Project, repo *modelv2.Repository) ([]*modelv2.Artifact, error) {
+	return c.project.ListProjectArtifacts(ctx, p, repo)
+}
+
 // Registry Client
 
 // NewRegistry wraps the NewRegistry method of the registry sub-package.

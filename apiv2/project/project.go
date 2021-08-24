@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strconv"
 
+	artifactapi "github.com/mittwald/goharbor-client/v4/apiv2/internal/api/client/artifact"
 	projectapi "github.com/mittwald/goharbor-client/v4/apiv2/internal/api/client/project"
 	"github.com/mittwald/goharbor-client/v4/apiv2/internal/api/client/robotv1"
 
@@ -277,6 +278,24 @@ func (c *RESTClient) ListProjectMembers(ctx context.Context, p *modelv2.Project)
 			ProjectID:  int64(p.ProjectID),
 			Context:    ctx,
 		}, c.AuthInfo)
+	if err != nil {
+		return nil, handleSwaggerProjectErrors(err)
+	}
+
+	return resp.Payload, nil
+}
+
+// ListProjectArtifacts returns a list of project artifacts.
+func (c *RESTClient) ListProjectArtifacts(ctx context.Context, p *modelv2.Project, repo *modelv2.Repository) ([]*modelv2.Artifact, error) {
+	if p == nil {
+		return nil, &ErrProjectNotProvided{}
+	}
+
+	resp, err := c.V2Client.Artifact.ListArtifacts(&artifactapi.ListArtifactsParams{
+		ProjectName: p.Name,
+		RepositoryName: repo.Name,
+		Context: ctx,
+	}, c.AuthInfo)
 	if err != nil {
 		return nil, handleSwaggerProjectErrors(err)
 	}

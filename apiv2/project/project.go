@@ -291,10 +291,12 @@ func (c *RESTClient) ListProjectArtifacts(ctx context.Context, p *modelv2.Projec
 		return nil, &ErrProjectNotProvided{}
 	}
 
+	pageSize := int64(-1)
 	resp, err := c.V2Client.Artifact.ListArtifacts(&artifactapi.ListArtifactsParams{
-		ProjectName: p.Name,
+		ProjectName:    p.Name,
 		RepositoryName: repo.Name,
-		Context: ctx,
+		Context:        ctx,
+		PageSize:       &pageSize,
 	}, c.AuthInfo)
 	if err != nil {
 		return nil, handleSwaggerProjectErrors(err)
@@ -525,10 +527,11 @@ func (c *RESTClient) ListProjectRobots(ctx context.Context, p *modelv2.Project) 
 	if p == nil {
 		return nil, &ErrProjectNotProvided{}
 	}
-
+	pageSize := int64(-1)
 	resp, err := c.V2Client.Robotv1.ListRobotV1(&robotv1.ListRobotV1Params{
 		ProjectNameOrID: ProjectIDAsString(p.ProjectID),
 		Context:         ctx,
+		PageSize:        &pageSize,
 	}, c.AuthInfo)
 	if err != nil {
 		return nil, handleSwaggerProjectErrors(err)

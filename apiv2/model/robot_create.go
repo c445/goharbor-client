@@ -23,7 +23,7 @@ type RobotCreate struct {
 	Description string `json:"description,omitempty"`
 
 	// The disable status of the robot
-	Disable bool `json:"disable,omitempty"`
+	Disable bool `json:"disable"`
 
 	// The duration of the robot in days
 	Duration int64 `json:"duration,omitempty"`

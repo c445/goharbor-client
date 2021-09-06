@@ -45,6 +45,9 @@ const (
 	// ErrProjectMemberMismatchMsg is the error message for ErrProjectMemberMismatch error.
 	ErrProjectMemberMismatchMsg = "no user with id/name pair found on server side"
 
+	// ErrProjectMemberAlreadyExistsMsg is the error message for ErrProjectMemberAlreadyExists error.
+	ErrProjectMemberAlreadyExistsMsg = "user with such name already exists"
+
 	// ErrProjectMemberIllegalFormatMsg is the error message for ErrProjectMemberIllegalFormat error.
 	ErrProjectMemberIllegalFormatMsg = "illegal format of project member or project id is invalid, or LDAP DN is invalid"
 
@@ -172,6 +175,15 @@ type ErrProjectMemberMismatch struct{}
 // Error returns the error message.
 func (e *ErrProjectMemberMismatch) Error() string {
 	return ErrProjectMemberMismatchMsg
+}
+
+// ErrProjectMemberAlreadyExists describes an error
+// when a user is already a member of a project.
+type ErrProjectMemberAlreadyExists struct{}
+
+// Error returns the error message.
+func (e *ErrProjectMemberAlreadyExists) Error() string {
+	return ErrProjectMemberAlreadyExistsMsg
 }
 
 // ErrProjectMemberIllegalFormat describes an communication

@@ -241,8 +241,8 @@ func (c *RESTClient) AddProjectMember(ctx context.Context, p *modelv2.Project, u
 			userExists = true
 		}
 	}
-	if !userExists {
-		return &ErrProjectMemberMismatch{}
+	if userExists {
+		return &ErrProjectMemberAlreadyExists{}
 	}
 
 	m := &legacymodel.ProjectMember{

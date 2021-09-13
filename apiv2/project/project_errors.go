@@ -387,6 +387,8 @@ func handleSwaggerProjectErrors(in error) error {
 		return &ErrProjectInvalidRequest{}
 	case *products.PostProjectsProjectIDMetadatasBadRequest:
 		return &ErrProjectInvalidRequest{}
+	case *products.PostProjectsProjectIDMembersConflict:
+		return &ErrProjectMemberAlreadyExists{}
 	default:
 		return in
 	}

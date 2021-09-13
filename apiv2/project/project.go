@@ -236,16 +236,27 @@ func (c *RESTClient) AddProjectMember(ctx context.Context, p *modelv2.Project, u
 		return err
 	}
 	userExists := false
-	for _, username := range userSearch.Payload {
-		if username.Username == u.Username {
+	var userFound legacymodel.UserSearch
+	for _, usersearch := range userSearch.Payload {
+		if usersearch.Username == u.Username || usersearch.UserID == u.UserID {
 			userExists = true
-		}
-		if username.UserID == u.UserID {
-			userExists = true
+			userFound = *usersearch
 		}
 	}
 	if !userExists {
 		return &ErrProjectMemberMismatch{}
+	}
+
+	entityName := userFound.Username
+	_, err = c.LegacyClient.Products.GetProjectsProjectIDMembers(
+		&products.GetProjectsProjectIDMembersParams{
+			Entityname: &entityName,
+			ProjectID:  int64(p.ProjectID),
+			Context:    ctx,
+		}, c.AuthInfo)
+	if err == nil {
+		// user is already a member of the project
+		return nil
 	}
 
 	m := &legacymodel.ProjectMember{
